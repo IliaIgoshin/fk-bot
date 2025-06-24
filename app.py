@@ -2,6 +2,7 @@ from flask import Flask, request, abort
 import hashlib
 import os
 import gspread
+import json
 from oauth2client.service_account import ServiceAccountCredentials
 import telegram
 
@@ -15,7 +16,8 @@ FEEKASSA_SECRET = os.getenv("FEEKASSA_SECRET")
 
 # Настройка Google Sheets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("google_creds.json", scope)
+creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_key(GOOGLE_SHEET_ID).sheet1
 
